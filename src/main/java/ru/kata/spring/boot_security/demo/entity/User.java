@@ -1,22 +1,19 @@
 package ru.kata.spring.boot_security.demo.entity;
 
-
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Past;
-import javax.validation.constraints.Size;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User implements UserDetails {
 
     @Id
@@ -24,23 +21,11 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "first_name")
-    @NotEmpty(message = "Name should not be empty")
-    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
     private String firstName;
 
     @Column(name = "last_name")
-    @NotEmpty(message = "Lastname should not be empty")
-    @Size(min = 2, max = 30, message = "Lastname should be between 2 and 30 characters")
     private String lastName;
 
-    @Column(name = "birthday")
-    @Temporal(TemporalType.DATE)
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @Past
-    private Date birthDay;
-
-    @NotEmpty
-    @Size(min = 3, max = 30, message = "Username should be between 3 and 30 characters")
     @Column(name = "username", unique = true)
     private String username;
 
@@ -57,10 +42,9 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String firstName, String lastName, Date birthDay, String username, String password) {
+    public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.birthDay = birthDay;
         this.username = username;
         this.password = password;
     }
@@ -104,82 +88,4 @@ public class User implements UserDetails {
         return true;
     }
 
-    public Set<String> getRoleNames() {
-        return roles.stream().map(Role::getRoleName).collect(Collectors.toSet());
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Date getBirthDay() {
-        return birthDay;
-    }
-
-    public void setBirthDay(Date birthDay) {
-        this.birthDay = birthDay;
-    }
-
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
-
-    public void setUsername(String login) {
-        this.username = login;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName,
-                user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(birthDay,
-                user.birthDay);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, firstName, lastName, birthDay);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-               "id=" + id +
-               ", firstName='" + firstName + '\'' +
-               ", lastName='" + lastName + '\'' +
-               ", birthDay=" + birthDay +
-               ", username='" + username + '\'' +
-               ", roles=" + roles.toString() +
-               '}';
-    }
 }

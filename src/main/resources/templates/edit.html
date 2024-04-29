@@ -14,9 +14,6 @@
     <label for="lastName"> Фамилия: </label>
     <input type="text" th:field="*{lastName}" id="lastName"/>
     <br/><br/>
-    <label for="birthDay"> Дата рождения: </label>
-    <input type="date" th:field="*{birthDay}" id="birthDay"/>
-    <br/><br/>
     <label for="username">Логин</label>
     <input type="text" th:field="*{username}" id="username"/>
     <br/><br/>
@@ -26,7 +23,7 @@
     <label>Выберите роль:
         <input type="checkbox" name="roles"
                th:each="role : ${roles}"
-               th:value="${role.getRoleId()}"
+               th:value="${role.getId()}"
                th:text="${role.getRoleName()}"
                th:checked="${#lists.contains(user.roles, role)}"
         />

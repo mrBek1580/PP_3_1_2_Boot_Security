@@ -8,14 +8,12 @@ import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
 import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
-
 import java.util.Set;
-
 
 @Controller
 @RequestMapping(value = "/admin")
 public class AdminController {
-    private static final String REDIRECT_TO_ADMIN = "redirect:/admin";
+
     private final UserServiceImpl userServiceImpl;
     private final RoleServiceImpl roleServiceImpl;
 
@@ -28,39 +26,39 @@ public class AdminController {
     @GetMapping()
     public String getAdminPage(Model model) {
         model.addAttribute("allUsers", userServiceImpl.getAllUsers());
-        return "admin_page";
+        return "adminPage";
     }
 
-    @GetMapping(value = "/add_user")
+    @GetMapping("/add_user")
     public String getNewUserForm(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("roles", roleServiceImpl.getAllRoles());
-        return "new_user_form";
+        return "new";
     }
 
-    @PostMapping(value = "/add_user")
-    public String addUser(@ModelAttribute("user") User user, @RequestParam("roles") Set<Long> roleIds, Model model) {
+    @PostMapping("/add_user")
+    public String addUser(@ModelAttribute("user") User user, @RequestParam("roles") Set<Long> roleIds) {
         Set<Role> roles = roleServiceImpl.findDyIds(roleIds);
 
         user.setRoles(roles);
         userServiceImpl.saveUser(user);
-        return REDIRECT_TO_ADMIN;
+        return "redirect:/admin";
     }
 
-    @GetMapping(value = "/{id}/show_user")
+    @GetMapping("/{id}/show_user")
     public String showSingleUser(@PathVariable(value = "id") Long id, Model model) {
         model.addAttribute("user", userServiceImpl.findUserById(id));
         return "user";
     }
 
-    @GetMapping(value = "/edit_user")
+    @GetMapping("/edit_user")
     public String getUserEditForm(@RequestParam("id") Long id, Model model) {
         User user = userServiceImpl.findUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("roles", roleServiceImpl.getAllRoles());
-        return "edit_user_form";
+        return "edit";
     }
 
-    @PostMapping(value = "/{id}/edit_user")
+    @PostMapping("/{id}/edit_user")
     public String updateUser(@ModelAttribute("user") User user,
                              @RequestParam("roles") Set<Long> roleIds,
                              @PathVariable("id") Long id) {
@@ -68,12 +66,12 @@ public class AdminController {
         user.setRoles(roles);
         user.setId(id);
         userServiceImpl.updateUser(user);
-        return REDIRECT_TO_ADMIN;
+        return "redirect:/admin";
     }
 
-    @GetMapping(value = "/delete_user")
+    @GetMapping("/delete_user")
     public String deleteUserById(@RequestParam("id") Long id) {
         userServiceImpl.delete(id);
-        return REDIRECT_TO_ADMIN;
+        return "redirect:/admin";
     }
 }

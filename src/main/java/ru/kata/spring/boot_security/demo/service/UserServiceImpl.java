@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDAO;
 import ru.kata.spring.boot_security.demo.entity.User;
-
 import java.util.List;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
+
     private final UserDAO userRepository;
     private final PasswordEncoder passwordEncoder;
 

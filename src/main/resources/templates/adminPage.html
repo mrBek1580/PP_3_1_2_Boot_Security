@@ -32,7 +32,6 @@
         <th>ID</th>
         <th>Имя</th>
         <th>Фамилия</th>
-        <th>Дата рождения</th>
         <th>Роли</th>
         <th>Действия</th>
     </tr>
@@ -40,7 +39,6 @@
         <td th:text="${user.getId()}"/>
         <td th:text="${user.getFirstName()}"/>
         <td th:text="${user.getLastName()}"/>
-        <td th:text="${user.getBirthDay()}"/>
         <td>
             <ul th:each="role: ${user.getRoles()}" th:text="${role.getRoleName()}"/>
         </td>
