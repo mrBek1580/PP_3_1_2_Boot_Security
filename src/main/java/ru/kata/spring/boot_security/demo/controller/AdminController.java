@@ -6,7 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.entity.Role;
 import ru.kata.spring.boot_security.demo.entity.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
+import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import java.util.Set;
 
@@ -14,47 +16,47 @@ import java.util.Set;
 @RequestMapping(value = "/admin")
 public class AdminController {
 
-    private final UserServiceImpl userServiceImpl;
-    private final RoleServiceImpl roleServiceImpl;
+    private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
     public AdminController(UserServiceImpl userServiceImpl, RoleServiceImpl roleServiceImpl) {
-        this.userServiceImpl = userServiceImpl;
-        this.roleServiceImpl = roleServiceImpl;
+        this.userService = userServiceImpl;
+        this.roleService = roleServiceImpl;
     }
 
     @GetMapping()
     public String getAdminPage(Model model) {
-        model.addAttribute("allUsers", userServiceImpl.getAllUsers());
+        model.addAttribute("allUsers", userService.getAllUsers());
         return "adminPage";
     }
 
     @GetMapping("/add_user")
     public String getNewUserForm(@ModelAttribute("user") User user, Model model) {
-        model.addAttribute("roles", roleServiceImpl.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "new";
     }
 
     @PostMapping("/add_user")
     public String addUser(@ModelAttribute("user") User user, @RequestParam("roles") Set<Long> roleIds) {
-        Set<Role> roles = roleServiceImpl.findDyIds(roleIds);
+        Set<Role> roles = roleService.findDyIds(roleIds);
 
         user.setRoles(roles);
-        userServiceImpl.saveUser(user);
+        userService.saveUser(user);
         return "redirect:/admin";
     }
 
     @GetMapping("/{id}/show_user")
     public String showSingleUser(@PathVariable(value = "id") Long id, Model model) {
-        model.addAttribute("user", userServiceImpl.findUserById(id));
+        model.addAttribute("user", userService.findUserById(id));
         return "user";
     }
 
     @GetMapping("/edit_user")
     public String getUserEditForm(@RequestParam("id") Long id, Model model) {
-        User user = userServiceImpl.findUserById(id);
+        User user = userService.findUserById(id);
         model.addAttribute("user", user);
-        model.addAttribute("roles", roleServiceImpl.getAllRoles());
+        model.addAttribute("roles", roleService.getAllRoles());
         return "edit";
     }
 
@@ -62,16 +64,16 @@ public class AdminController {
     public String updateUser(@ModelAttribute("user") User user,
                              @RequestParam("roles") Set<Long> roleIds,
                              @PathVariable("id") Long id) {
-        Set<Role> roles = roleServiceImpl.findDyIds(roleIds);
+        Set<Role> roles = roleService.findDyIds(roleIds);
         user.setRoles(roles);
         user.setId(id);
-        userServiceImpl.updateUser(user);
+        userService.updateUser(user);
         return "redirect:/admin";
     }
 
     @DeleteMapping("/delete_user")
     public String deleteUserById(@RequestParam("id") Long id) {
-        userServiceImpl.delete(id);
+        userService.delete(id);
         return "redirect:/admin";
     }
 }
